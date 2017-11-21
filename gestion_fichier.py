@@ -3,12 +3,16 @@
 import os
 import string
 
+# Retourne le chemin absolu du chemin passé en paramètre
+def chemin_absolu(chemin):
+    return os.path.abspath(chemin)
+
 # Lit le fichier dont le chemin est spécifié
 # Si le chemin est incorrect, un message d'erreur s'affiche
 # Retourne le fichier lu
 def lire_fichier(chemin):
     try:
-        fichier = open(os.path.abspath(chemin), 'r')
+        fichier = open(chemin_absolu(chemin), 'r')
     except:
         print("Chemin ou fichier incorrect !")
     return fichier
@@ -16,7 +20,7 @@ def lire_fichier(chemin):
 # Converti le fichier (dont le chemin est spécifié) en UTF-8
 # Retourne le chemin du fichier converti
 def chemin_convertir_fichier(chemin):
-    commande = "iconv -f WINDOWS-1252 -t UTF-8 " + os.path.abspath(chemin) + " > " + os.path.dirname(
+    commande = "iconv -f WINDOWS-1252 -t UTF-8 " + chemin_absolu(chemin) + " > " + os.path.dirname(
         os.path.abspath(chemin)) + "/" + os.path.splitext(os.path.basename(chemin))[0] + "_utf8.txt"
     os.system(commande)
     return  os.path.dirname(os.path.abspath(chemin)) + "/" + os.path.splitext(os.path.basename(chemin))[
@@ -58,9 +62,7 @@ def txt_to_column(chemin):
 # Enlève la ponctuation du fichier spcifié
 # Retourne le fichier créé
 def fichier_enlever_ponctuation(fichier):
-    st1 = os.path.dirname(os.path.abspath(chemin)) + "/" + os.path.splitext(os.path.basename(chemin))[
-        0] + "_ponctuation.txt"
-    fichier2 = open(st1, 'w')
+    fichier2 = open(fichier, 'w')
     for ligne in fichier:
         fichier2.write(ligne.translate(None, string.punctuation))
     return fichier2
@@ -68,4 +70,11 @@ def fichier_enlever_ponctuation(fichier):
 # Enlève la ponctuation du fichier (dont le chemin est spécifié)
 # Retourne le fichier créé
 def chemin_enlever_ponctuation(chemin):
-    fichier_enlever_ponctuation(lire_fichier(chemin))
+    fichier1 = lire_fichier(chemin)
+    st1 = os.path.dirname(os.path.abspath(chemin)) + "/" + os.path.splitext(os.path.basename(chemin))[
+        0] + "_ponctuation.txt"
+    fichier2 = open(chemin, 'w')
+    for ligne in fichier1:
+        fichier2.write(ligne.translate(None, string.punctuation))
+    return os.path.dirname(os.path.abspath(chemin)) + "/" + os.path.splitext(os.path.basename(chemin))[
+        0] + "_ponctuation.txt"
